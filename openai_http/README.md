@@ -1,6 +1,6 @@
 # OpenAI HTTP API Client
 
-A Rust client for the OpenAI HTTP API.
+A strongly-typed client for the OpenAI HTTP API.
 
 This crate is an *unofficial*, community-driven effort.
 
