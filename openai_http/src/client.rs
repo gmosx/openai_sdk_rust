@@ -1,7 +1,7 @@
 //! <https://platform.openai.com/docs/api-reference>
 
 use reqwest::header;
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::error::Error;
 
@@ -14,6 +14,16 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub trait Request {
     type Response;
     fn path(&self) -> String;
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiError {
+    pub message: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiErrorResponse {
+    pub error: ApiError,
 }
 
 // #TODO add support for timeout.
@@ -111,32 +121,16 @@ impl Client {
         if response.status() == 200 {
             let body: serde_json::Value = response.json().await?;
 
-            // let status = body["result"]["status"].as_str().unwrap_or("error");
-
-            // if status == "error" {
-            //     // dbg!(&body);
-            //     // debug!("{}", body);
-
-            //     return Err(Error::Api(
-            //         body["result"]["error"]
-            //             .as_str()
-            //             .unwrap_or_default()
-            //             .to_owned(),
-            //     ));
-            // }
-
             match serde_json::from_value::<Resp>(body) {
                 Ok(body) => Ok(body),
-                Err(err) => {
-                    // #TODO add an option to show diagnostics?
-                    Err(Error::Format(err.to_string()))
-                }
+                Err(err) => Err(Error::Format(err.to_string())),
             }
         } else {
+            let status = response.status();
+            let response: ApiErrorResponse = response.json().await?;
             Err(Error::Api(format!(
                 "Status {}: {}",
-                response.status(),
-                response.text().await?
+                status, response.error.message,
             )))
         }
     }

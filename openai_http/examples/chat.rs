@@ -38,8 +38,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         context.push(Message::new("user", &user_content));
 
         let req = CreateChatCompletionRequest::new(&context);
-        let resp = client.call(req).await.unwrap();
-        
+        let resp = client.call(req).await?;
+
         let message = resp.choices[0].message.clone();
 
         println!("Agent: {}", message.content);
