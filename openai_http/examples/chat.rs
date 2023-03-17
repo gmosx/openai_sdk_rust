@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use openai_sdk::{
+use openai_http::{
     api::create_chat_completion::CreateChatCompletionRequest, client::Client, types::Message,
 };
 
