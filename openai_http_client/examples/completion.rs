@@ -12,7 +12,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .temperature(1.8);
     let resp = openai.call(req).await?;
 
-    let text = resp.choices[0].text.clone();
+    let text = &resp.choices[0].text;
 
     println!("{prompt}{text}");
 

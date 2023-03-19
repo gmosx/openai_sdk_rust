@@ -40,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let req = CreateChatCompletionRequest::new(&context);
         let resp = openai.call(req).await?;
 
-        let message = resp.choices[0].message.clone();
+        let message = &resp.choices[0].message;
 
         println!("Agent: {}", message.content);
 
@@ -48,7 +48,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             break;
         }
 
-        context.push(message);
+        context.push(message.clone());
     }
 
     Ok(())

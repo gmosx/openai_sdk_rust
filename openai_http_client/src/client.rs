@@ -100,7 +100,6 @@ impl Client {
 
         let json = serde_json::to_string(&request)?;
 
-        println!("---- {json}");
         let response = self
             .http_client
             .post(&url)
