@@ -6,8 +6,8 @@ use openai_http::{
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let api_token = std::env::var("OPENAI_API_KEY")?;
-    let client = Client::new(&api_token);
+    let api_key = std::env::var("OPENAI_API_KEY")?;
+    let openai = Client::new(&api_key);
 
     let mut context = vec![
         Message::new(
@@ -38,7 +38,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         context.push(Message::new("user", &user_content));
 
         let req = CreateChatCompletionRequest::new(&context);
-        let resp = client.call(req).await?;
+        let resp = openai.call(req).await?;
 
         let message = resp.choices[0].message.clone();
 
