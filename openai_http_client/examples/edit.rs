@@ -8,7 +8,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let input = "Here is a tuxt with tipos, hopefully the asssistant can fix them.";
     let instruction = "Fix the spelling mistakes";
     let req = CreateEditRequest::new(input, instruction);
-    let resp = openai.call(req).await?;
+    let resp = openai.send(req).await?;
 
     let text = &resp.choices[0].text;
 

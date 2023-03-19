@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let req = CreateCompletionRequest::new(prompt)
         .model("text-davinci-003")
         .temperature(1.8);
-    let resp = openai.call(req).await?;
+    let resp = openai.send(req).await?;
 
     let text = &resp.choices[0].text;
 

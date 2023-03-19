@@ -38,7 +38,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         context.push(Message::new("user", &user_content));
 
         let req = CreateChatCompletionRequest::new(&context);
-        let resp = openai.call(req).await?;
+        let resp = openai.send(req).await?;
 
         let message = &resp.choices[0].message;
 

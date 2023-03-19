@@ -91,7 +91,7 @@ impl Client {
         ClientBuilder::default()
     }
 
-    pub async fn call<Req>(&self, request: Req) -> Result<Req::Response>
+    pub async fn send<Req>(&self, request: Req) -> Result<Req::Response>
     where
         Req: Request + Serialize,
         Req::Response: DeserializeOwned,
