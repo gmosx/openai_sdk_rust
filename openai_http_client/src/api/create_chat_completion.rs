@@ -2,10 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    client::{Request, DEFAULT_MODEL},
-    types::Message,
-};
+use crate::{client::Request, types::Message};
+
+pub const DEFAULT_MODEL: &str = "gpt-3.5-turbo";
 
 // #TODO extract model field?
 

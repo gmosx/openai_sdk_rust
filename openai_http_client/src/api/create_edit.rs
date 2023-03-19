@@ -1,42 +1,41 @@
-//! <https://platform.openai.com/docs/api-reference/completions/create>
+//! <https://platform.openai.com/docs/api-reference/edits/create>
 
 use serde::{Deserialize, Serialize};
 
 use crate::client::Request;
 
-pub const DEFAULT_MODEL: &str = "text-davinci-003";
+pub const DEFAULT_MODEL: &str = "text-davinci-edit-001";
 
 // #TODO extract model field?
 // #TODO have different default model per request type.
 
 #[derive(Default, Clone, Serialize)]
-pub struct CreateCompletionRequest {
+pub struct CreateEditRequest {
     pub model: String,
-    // #TODO also support array-of-strings prompt.
-    pub prompt: String,
+    pub input: String,
+    pub instruction: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub suffix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub temperature: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_tokens: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub n: Option<i32>,
 }
 
-impl Request for CreateCompletionRequest {
-    type Response = CreateCompletionResponse;
+impl Request for CreateEditRequest {
+    type Response = CreateEditResponse;
 
     fn path(&self) -> String {
-        "/v1/completions".to_string()
+        "/v1/edits".to_string()
     }
 }
 
-impl CreateCompletionRequest {
-    pub fn new(prompt: &str) -> Self {
+impl CreateEditRequest {
+    pub fn new(input: &str, instruction: &str) -> Self {
         Self {
             model: DEFAULT_MODEL.to_owned(),
-            prompt: prompt.to_owned(),
+            input: input.to_owned(),
+            instruction: instruction.to_owned(),
             ..Default::default()
         }
     }
@@ -62,13 +61,6 @@ impl CreateCompletionRequest {
         }
     }
 
-    pub fn max_tokens(self, max_tokens: i32) -> Self {
-        Self {
-            max_tokens: Some(max_tokens),
-            ..self
-        }
-    }
-
     pub fn n(self, n: i32) -> Self {
         Self { n: Some(n), ..self }
     }
@@ -76,7 +68,6 @@ impl CreateCompletionRequest {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Choice {
-    pub finish_reason: String,
     pub index: i32,
     pub text: String,
 }
@@ -89,11 +80,9 @@ pub struct Usage {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct CreateCompletionResponse {
-    pub id: String,
+pub struct CreateEditResponse {
     pub object: String,
     pub created: i64,
-    pub model: String,
     pub choices: Vec<Choice>,
     pub usage: Usage,
 }

@@ -6,7 +6,6 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use crate::error::Error;
 
 pub const DEFAULT_BASE_URL: &str = "https://api.openai.com";
-pub const DEFAULT_MODEL: &str = "gpt-3.5-turbo";
 pub const DEFAULT_USER_AGENT: &str = "rust-openai-sdk";
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -101,6 +100,7 @@ impl Client {
 
         let json = serde_json::to_string(&request)?;
 
+        println!("---- {json}");
         let response = self
             .http_client
             .post(&url)
@@ -111,17 +111,10 @@ impl Client {
             .send()
             .await?;
 
-        self.parse_response(response).await
-    }
-
-    async fn parse_response<Resp>(&self, response: reqwest::Response) -> Result<Resp>
-    where
-        Resp: DeserializeOwned,
-    {
         let status = response.status();
 
         if status == 200 {
-            let response: Resp = response.json().await?;
+            let response: Req::Response = response.json().await?;
             Ok(response)
         } else {
             let response: ApiErrorResponse = response.json().await?;
