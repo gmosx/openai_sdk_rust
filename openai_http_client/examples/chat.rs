@@ -1,7 +1,7 @@
 use std::io::Write;
 
-use openai_http::{
-    api::create_chat_completion::CreateChatCompletionRequest, client::Client, types::Message,
+use openai_http_client::{
+    api::create_chat_completion::CreateChatCompletionRequest, types::Message, Client,
 };
 
 #[tokio::main]

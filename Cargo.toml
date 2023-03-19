@@ -1,5 +1,3 @@
 [workspace]
 
-members = [
-    "openai_http",
-]
+members = ["openai_http_client"]

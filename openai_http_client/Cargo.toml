@@ -1,5 +1,5 @@
 [package]
-name = "openai_http"
+name = "openai_http_client"
 description = "A strongly-typed client for the OpenAI HTTP API"
 version = "0.3.0"
 license = "MIT OR Apache-2.0"
