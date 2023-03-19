@@ -21,7 +21,7 @@ For questions, suggestions, etc, you can reach the maintainer on [Twitter](https
 
 Each component of the SDK is individually licensed. Please check the corresponding directories for more details.
 
-- openai_http: [LICENSE-MIT](openai_http/LICENSE-MIT), [LICENSE-APACHE](openai_http/LICENSE-APACHE)
+- openai_http_client: [LICENSE-MIT](openai_http_client/LICENSE-MIT), [LICENSE-APACHE](openai_http_client/LICENSE-APACHE)
 
 ## Disclaimer
 
