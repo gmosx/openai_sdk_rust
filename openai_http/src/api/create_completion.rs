@@ -1,18 +1,19 @@
-//! https://platform.openai.com/docs/api-reference/chat/create
+//! <https://platform.openai.com/docs/api-reference/completions/create>
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    client::{Request, DEFAULT_MODEL},
-    types::Message,
-};
+use crate::client::{Request, DEFAULT_MODEL};
 
 // #TODO extract model field?
+// #TODO have different default model per request type.
 
 #[derive(Default, Clone, Serialize)]
-pub struct CreateChatCompletionRequest {
+pub struct CreateCompletionRequest {
     pub model: String,
-    pub messages: Vec<Message>,
+    // #TODO also support array-of-strings prompt.
+    pub prompt: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub temperature: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -21,19 +22,19 @@ pub struct CreateChatCompletionRequest {
     pub n: Option<i32>,
 }
 
-impl Request for CreateChatCompletionRequest {
-    type Response = CreateChatCompletionResponse;
+impl Request for CreateCompletionRequest {
+    type Response = CreateCompletionResponse;
 
     fn path(&self) -> String {
-        "/v1/chat/completions".to_string()
+        "/v1/completions".to_string()
     }
 }
 
-impl CreateChatCompletionRequest {
-    pub fn new(messages: &[Message]) -> Self {
+impl CreateCompletionRequest {
+    pub fn new(prompt: &str) -> Self {
         Self {
             model: DEFAULT_MODEL.to_owned(),
-            messages: messages.to_vec(),
+            prompt: prompt.to_owned(),
             ..Default::default()
         }
     }
@@ -41,6 +42,13 @@ impl CreateChatCompletionRequest {
     pub fn model(self, model: &str) -> Self {
         Self {
             model: model.to_owned(),
+            ..self
+        }
+    }
+
+    pub fn suffix(self, suffix: &str) -> Self {
+        Self {
+            suffix: Some(suffix.to_owned()),
             ..self
         }
     }
@@ -68,7 +76,7 @@ impl CreateChatCompletionRequest {
 pub struct Choice {
     pub finish_reason: String,
     pub index: i32,
-    pub message: Message,
+    pub text: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -79,7 +87,7 @@ pub struct Usage {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct CreateChatCompletionResponse {
+pub struct CreateCompletionResponse {
     pub id: String,
     pub object: String,
     pub created: i64,

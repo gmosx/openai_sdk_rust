@@ -118,15 +118,12 @@ impl Client {
     where
         Resp: DeserializeOwned,
     {
-        if response.status() == 200 {
-            let body: serde_json::Value = response.json().await?;
+        let status = response.status();
 
-            match serde_json::from_value::<Resp>(body) {
-                Ok(body) => Ok(body),
-                Err(err) => Err(Error::Format(err.to_string())),
-            }
+        if status == 200 {
+            let response: Resp = response.json().await?;
+            Ok(response)
         } else {
-            let status = response.status();
             let response: ApiErrorResponse = response.json().await?;
             Err(Error::Api(format!(
                 "Status {}: {}",
